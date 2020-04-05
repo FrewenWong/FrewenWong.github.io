@@ -2441,7 +2441,7 @@ figure.gallery-group .gallery-group-name:after {
   transition: all 0.5s;
 }
 #nav.full_page {
-  height: 1000px;
+  height: 950px;
 }
 #nav.full_page #site-info {
   position: absolute;
