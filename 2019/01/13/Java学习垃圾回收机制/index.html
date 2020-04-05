@@ -97,16 +97,16 @@ function activateLightMode(){
 <p>引用计数法优点：实现简单，判定效率也很高；</p>
 <p>引用计数法缺点：难以解决对象之间相互循环引用导致计数器值不等于0的问题。</p>
 <h4 id="3-2-可达性分析法-Reference-Counting-Collector"><a href="#3-2-可达性分析法-Reference-Counting-Collector" class="headerlink" title="3.2. 可达性分析法(Reference Counting Collector)"></a>3.2. 可达性分析法(Reference Counting Collector)</h4><p>大多数垃圾回收算法使用了根集(root set)这个概念；所谓根集就是正在执行的Java程序可以访问的引用变量的集合(包括局部变量、参数、类变量)，程序可以使用引用变量访问对象的属性和调用对象的方法。可达性分析法首先需要确定从根开始哪些是可达的和哪些是不可达的，从根集可达的对象都是活动对象，它们不能作为垃圾被回收，这也包括从根集间接可达的对象。而根集通过任意路径不可达的对象符合垃圾收集的条件，应该被回收。</p>
-<p><img src="/" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731153706.png" alt></p>
+<p><img src="/img/loading.gif" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731153706.png" alt></p>
 <p>从图中我们可以看出：通过可达性分析法，从GC Roots开发进行对象可达性分析，可以看出obj5、obj6、obj7的对象都是不可达的，尽管他们之间存在引用关系（这种情况使用引用计数法就会存在问题）</p>
 <h3 id="4-垃圾回收的算法分析"><a href="#4-垃圾回收的算法分析" class="headerlink" title="4. 垃圾回收的算法分析"></a>4. 垃圾回收的算法分析</h3><h4 id="4-1-tracing算法-Tracing-Collector-跟踪收集器"><a href="#4-1-tracing算法-Tracing-Collector-跟踪收集器" class="headerlink" title="4.1 tracing算法(Tracing Collector 跟踪收集器)"></a>4.1 tracing算法(Tracing Collector 跟踪收集器)</h4><p>tracing(跟踪算法)算法是为了解决引用计数法的问题而提出，它使用了根集的概念。基于tracing算法的垃圾收集器从根集开始扫描，识别出哪些对象可达，哪些对象不可达，并用某种方式标记可达对象，例如对每个可达对象设置一个或多个位。<br>在扫描识别过程中，基于tracing算法的垃圾收集也称为标记和清除(mark-and-sweep)垃圾收集器.<br>标记清除算法： 顾名思义分为两步，标记和清除。首先标记到需要回收的垃圾对象，然后回收掉这些垃圾对象。</p>
-<p>下面这张图是从网上抠的。大家可以看一下。<br><img src="/" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731153750.png" alt><br>标记清除算法的缺点：</p>
+<p>下面这张图是从网上抠的。大家可以看一下。<br><img src="/img/loading.gif" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731153750.png" alt><br>标记清除算法的缺点：</p>
 <ul>
 <li>1、空间问题：清除垃圾对象后会造成内存的碎片化，导致会产生大量的不连续的内存碎片。</li>
 <li>2、效率问题：标记和清除两个过程的效率都不高。</li>
 </ul>
 <h4 id="4-2-compacting算法-Compacting-Collector-压缩算法，较常用是基于压缩算法的整理标记算法"><a href="#4-2-compacting算法-Compacting-Collector-压缩算法，较常用是基于压缩算法的整理标记算法" class="headerlink" title="4.2 compacting算法(Compacting Collector 压缩算法，较常用是基于压缩算法的整理标记算法)"></a>4.2 compacting算法(Compacting Collector 压缩算法，较常用是基于压缩算法的整理标记算法)</h4><p>为了解决堆碎片问题，==基于压缩算法的标记整理算法==。主要是分为两步：先标记后整理。首先标记可以回收的垃圾对象。然后进行压缩。基于tracing的垃圾回收吸收了Compacting算法的思想，在清除的过程中，算法将所有的对象移到堆的一端，堆的另一端就变成了一个相邻的空闲内存区，收集器会对它移动的所有对象的所有引用进行更新，使得这些引用在新的位置能识别原来的对象。在基于Compacting算法的收集器的实现中，一般增加句柄和句柄表。</p>
-<p><img src="/" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731202739.png" alt></p>
+<p><img src="/img/loading.gif" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731202739.png" alt></p>
 <p>基于compacting算法的标记整理算法的优点：</p>
 <ul>
 <li>1、避免了内存碎片；</li>
@@ -115,7 +115,7 @@ function activateLightMode(){
 </ul>
 <h4 id="4-3-copying算法-Coping-Collector-复制算法"><a href="#4-3-copying算法-Coping-Collector-复制算法" class="headerlink" title="4.3 copying算法(Coping Collector 复制算法)"></a>4.3 copying算法(Coping Collector 复制算法)</h4><p>该算法的提出是为了克服句柄的开销和解决堆碎片的垃圾回收。它开始时把堆分成一个对象区和多个空闲区，程序从对象区为对象分配空间，当对象满了，基于coping算法的垃圾回收就从根集中扫描活动对象，并将每个活动对象复制到空闲区(使得活动对象所占的内存之间没有空闲间隔)，这样空闲区变成了对象区，原来的对象区变成了空闲区，程序会在新的对象区中分配内存。</p>
 <p>一种典型的基于coping算法(复制算法)的垃圾回收是stop-and-copy算法，它将堆内存按容量划分为大小相等的两块：对象区和空闲区域区，每次只使用其中的一块，当这一块内存将用完了，就将还存活着的对象复制到另一块内存上面，然后再把已使用过的内存空间一次清理掉。在对象区与空闲区域的切换过程中，程序暂停执行。 </p>
-<p><img src="/" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731203019.png" alt></p>
+<p><img src="/img/loading.gif" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/20190731203019.png" alt></p>
 <p>复制算法的优点</p>
 <ul>
 <li>1、可以有效避免内存的碎片化问题，实现简单，运行高效；每次都是对整个半区进行内存回收，内存分配时也不需要考虑内存碎片等情况，只要移动堆顶指针，按顺序分配内存即可；</li>
@@ -167,7 +167,7 @@ function activateLightMode(){
 <li>unreachable：对象不可通过上面两种途径可达</li>
 </ul>
 <p>具体的状态切换看下面的图：</p>
-<p><img src="/" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/finalize.png" alt></p>
+<p><img src="/img/loading.gif" class="lazyload" data-src="https://raw.githubusercontent.com/FrewenWong/PicUploader/master/finalize.png" alt></p>
 <p>变迁说明：<br>1、新建对象首先处于[reachable, unfinalized]状态(A)</p>
 <p>2、随着程序的运行，一些引用关系会消失，导致状态变迁，从reachable状态变迁到f-reachable(B, C, D)或unreachable(E, F)状态</p>
 <p>3、若JVM检测到处于unfinalized状态的对象变成f-reachable或unreachable，JVM会将其标记为finalizable状态(G,H)。若对象原处于[unreachable, unfinalized]状态，则同时将其标记为f-reachable(H)。</p>
